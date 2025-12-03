@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Droni Delivery - Traccia il tuo ordine</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom Design System -->
+    <link rel="stylesheet" href="/static/css/design-system.css?v=2">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar" id="main-navbar" style="display: none;">
+        <div class="container flex justify-between items-center">
+            <a href="/" class="navbar-brand">🚁 Droni Delivery</a>
+            <nav>
+                <ul class="navbar-nav" id="navbar-links">
+                    <li><a href="#" class="nav-link active" id="nav-ordini">I miei ordini</a></li>
+                    <li><a href="#" class="nav-link text-danger" id="nav-logout">Esci</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Role Selection (inizialmente nascosta, mostrata da JS) -->
+    <div id="role-section" class="login-wrapper" style="display: none;">
+        <div class="text-center">
+            <h1 class="mb-2">🚁 Droni Delivery</h1>
+            <p class="text-gray-500 mb-8">Sistema di gestione consegne con droni</p>
+            
+            <div class="flex gap-4 justify-center flex-wrap">
+                <div class="card cursor-pointer" style="width: 200px;" onclick="showLogin('cliente')">
+                    <div class="text-center p-4">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
+                        <h3>Cliente</h3>
+                        <p class="text-sm text-gray-500 mt-2">Traccia i tuoi ordini</p>
+                    </div>
+                </div>
+                
+                <div class="card cursor-pointer" style="width: 200px;" onclick="goToAdmin()">
+                    <div class="text-center p-4">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚙️</div>
+                        <h3>Amministratore</h3>
+                        <p class="text-sm text-gray-500 mt-2">Gestisci il sistema</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Section (inizialmente nascosta) -->
+    <div id="login-section" class="login-wrapper" style="display: none;">
+        <div class="login-card">
+            <div class="text-center mb-6">
+                <h2 class="login-title">Accesso Cliente</h2>
+                <p class="text-gray-500">Inserisci le tue credenziali</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="mario.rossi@mail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <div id="login-error" class="alert alert-error mb-4" style="display: none;"></div>
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Accedi</button>
+            </form>
+            
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg text-center">
+                <p class="text-xs text-gray-500 mb-1"><strong>Credenziali di test:</strong></p>
+                <p class="text-sm">mario.rossi@mail.com / pass123</p>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <a href="#" onclick="showRoleSelection()" class="text-sm">← Torna alla selezione</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="container py-6" id="main-container" style="display: none;">
+        <!-- Dashboard Section -->
+        <div id="dashboard-section">
+            <!-- Welcome Banner -->
+            <div class="card mb-6">
+                <h1>Benvenuto, <span id="user-name">Cliente</span>!</h1>
+                <p class="text-gray-500 mt-1 mb-0">Monitora i tuoi ordini in tempo reale</p>
+            </div>
+
+            <!-- Orders List -->
+            <div id="orders-view">
+                <div class="flex justify-between items-center mb-4">
+                    <h2>I Tuoi Ordini</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="loadOrders()">🔄 Aggiorna</button>
+                </div>
+                
+                <div id="orders-container" class="grid grid-cols-3 gap-4">
+                    <!-- Gli ordini verranno inseriti qui dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Order Detail View (inizialmente nascosto) -->
+            <div id="order-detail-view" style="display: none;">
+                <button class="btn btn-secondary mb-6" onclick="backToOrders()">
+                    ← Torna agli ordini
+                </button>
+                
+                <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+                    <!-- Info Ordine -->
+                    <div>
+                        <div class="card mb-4">
+                            <h3 class="card-title">📦 Dettagli Ordine</h3>
+                            <div id="order-info">
+                                <!-- Dettagli ordine -->
+                            </div>
+                        </div>
+
+                        <!-- Prodotti -->
+                        <div class="card mb-4">
+                            <h3 class="card-title">📋 Contenuto Pacco</h3>
+                            <div id="order-products">
+                                <!-- Lista prodotti -->
+                            </div>
+                        </div>
+
+                        <!-- Valutazione (solo se completata) -->
+                        <div class="card" id="rating-card" style="display: none;">
+                            <h3 class="card-title">⭐ Valuta la Consegna</h3>
+                            <div id="existing-rating" style="display: none;">
+                                <p><strong>Valutazione:</strong> <span id="display-rating"></span>/10 ⭐</p>
+                                <p><strong>Commento:</strong></p>
+                                <p class="text-gray-500" id="display-comment"></p>
+                            </div>
+                            <form id="rating-form" style="display: none;">
+                                <div class="form-group">
+                                    <label class="form-label">Punteggio (1-10)</label>
+                                    <div class="rating mb-3">
+                                        <span class="rating-star" data-rating="1">★</span>
+                                        <span class="rating-star" data-rating="2">★</span>
+                                        <span class="rating-star" data-rating="3">★</span>
+                                        <span class="rating-star" data-rating="4">★</span>
+                                        <span class="rating-star" data-rating="5">★</span>
+                                        <span class="rating-star" data-rating="6">★</span>
+                                        <span class="rating-star" data-rating="7">★</span>
+                                        <span class="rating-star" data-rating="8">★</span>
+                                        <span class="rating-star" data-rating="9">★</span>
+                                        <span class="rating-star" data-rating="10">★</span>
+                                    </div>
+                                    <input type="hidden" id="rating-value" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rating-comment" class="form-label">Commento (opzionale)</label>
+                                    <textarea id="rating-comment" class="form-control" rows="3" placeholder="Lascia un commento..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">Invia Valutazione</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Mappa e Tracciamento -->
+                    <div>
+                        <div class="card mb-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="card-title mb-0">🗺️ Posizione Drone</h3>
+                                <span id="live-indicator" class="badge badge-green">● LIVE</span>
+                            </div>
+                            <div id="map" class="map-container"></div>
+                        </div>
+
+                        <!-- Timeline Tracciamento -->
+                        <div class="card">
+                            <h3 class="card-title">📍 Storico Tracciamento</h3>
+                            <div id="tracking-timeline">
+                                <!-- Timeline tracce -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Spinner -->
+    <div id="loading" style="display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; z-index: 999;">
+        <div class="spinner" style="width: 40px; height: 40px; border: 3px solid var(--gray-200); border-top-color: var(--blue-600); border-radius: 50%; animation: spin 0.6s linear infinite;"></div>
+    </div>
+
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .rating-star { font-size: 1.5rem; transition: color 0.1s; }
+        .rating-star:hover, .rating-star.filled { color: var(--amber-500); }
+    </style>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
