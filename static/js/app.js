@@ -1,7 +1,7 @@
 // ============================================
 // CONFIGURAZIONE & VARIABILI GLOBALI
 // ============================================
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = '/api';
 let currentUser = null;
 let map = null;
 let droneMarker = null;
@@ -488,7 +488,7 @@ function backToOrders() {
 // UTILITY
 // ============================================
 function showLoading(show) {
-    document.getElementById('flex').style.display = show ? 'flex' : 'none';
+    document.getElementById('loading').style.display = show ? 'flex' : 'none';
 }
 
 function showAlert(message, type = 'info') {

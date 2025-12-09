@@ -235,12 +235,12 @@ droni/
    ```
 
 2. **Cliente SPA:**
-   - URL: http://localhost:5000/
+   - URL: http://localhost:5001/
    - Login: mario.rossi@mail.com / pass123
    - Testa: ordini, tracciamento live, valutazioni
 
 3. **Dashboard Admin:**
-   - URL: http://localhost:5000/admin
+   - URL: http://localhost:5001/admin
    - Testa: statistiche, CRUD droni, gestione missioni
 
 ## ✅ Risultato Finale

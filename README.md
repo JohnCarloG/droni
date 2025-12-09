@@ -147,12 +147,12 @@ python run.py
 python3 run.py
 ```
 
-Il server sarà disponibile su: `http://localhost:5000`
+Il server sarà disponibile su: `http://localhost:5001`
 
 ## 🌐 Accesso alle Applicazioni
 
 ### 👤 Cliente SPA
-- **URL**: http://localhost:5000/
+- **URL**: http://localhost:5001/
 - **Credenziali di test**:
   - Email: `mario.rossi@mail.com`
   - Password: `pass123`
@@ -168,7 +168,7 @@ Il server sarà disponibile su: `http://localhost:5000`
   - ✅ Stati ordine colorati
 
 ### 👨‍💼 Dashboard Amministrativa
-- **URL**: http://localhost:5000/admin
+- **URL**: http://localhost:5001/admin
 - **Funzionalità**:
   - ✅ Dashboard con 4 KPI in tempo reale
   - ✅ Gestione droni (CRUD completo)
@@ -272,30 +272,30 @@ Gray:      10 tonalità per consistenza
 
 **Windows PowerShell:**
 ```powershell
-Invoke-WebRequest -Uri "http://localhost:5000/api/test-db" | Select-Object -Expand Content
+Invoke-WebRequest -Uri "http://localhost:5001/api/test-db" | Select-Object -Expand Content
 ```
 
 **Linux/Mac/Git Bash:**
 ```bash
-curl http://localhost:5000/api/test-db
+curl http://localhost:5001/api/test-db
 ```
 
 **Browser:**
-Apri semplicemente: `http://localhost:5000/api/test-db`
+Apri semplicemente: `http://localhost:5001/api/test-db`
 
 ### Ottenere Lista Droni
 
 ```bash
-curl http://localhost:5000/api/droni
+curl http://localhost:5001/api/droni
 ```
 
-**Oppure usa il browser:** `http://localhost:5000/api/droni`
+**Oppure usa il browser:** `http://localhost:5001/api/droni`
 
 ### Creare un Nuovo Drone (POST)
 
 **Con curl:**
 ```bash
-curl -X POST http://localhost:5000/api/droni \
+curl -X POST http://localhost:5001/api/droni \
   -H "Content-Type: application/json" \
   -d '{
     "Modello": "DJI Mini 3 Pro",
@@ -306,7 +306,7 @@ curl -X POST http://localhost:5000/api/droni \
 
 **Con JavaScript (fetch API):**
 ```javascript
-fetch('http://localhost:5000/api/droni', {
+fetch('http://localhost:5001/api/droni', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -322,7 +322,7 @@ fetch('http://localhost:5000/api/droni', {
 ### Login Utente
 
 ```bash
-curl -X POST http://localhost:5000/api/login \
+curl -X POST http://localhost:5001/api/login \
   -H "Content-Type: application/json" \
   -d '{
     "Mail": "mario.rossi@mail.com",
@@ -338,12 +338,12 @@ curl -X POST http://localhost:5000/api/login \
 ### Tracciare una Missione in Corso
 
 ```bash
-curl http://localhost:5000/api/tracce/missione/1
+curl http://localhost:5001/api/tracce/missione/1
 ```
 
 **Visualizza ultima posizione:**
 ```bash
-curl http://localhost:5000/api/tracce/ultima/1
+curl http://localhost:5001/api/tracce/ultima/1
 ```
 
 ## 🗄️ Schema Database
@@ -461,7 +461,7 @@ droni/
 // Carica tutti i droni
 async function caricaDroni() {
   try {
-    const response = await fetch('http://localhost:5000/api/droni');
+    const response = await fetch('http://localhost:5001/api/droni');
     const droni = await response.json();
     console.log(droni);
     // Usa i dati per popolare la pagina
@@ -472,7 +472,7 @@ async function caricaDroni() {
 
 // Traccia missione in tempo reale
 async function tracciaMissione(idMissione) {
-  const response = await fetch(`http://localhost:5000/api/tracce/ultima/${idMissione}`);
+  const response = await fetch(`http://localhost:5001/api/tracce/ultima/${idMissione}`);
   const posizione = await response.json();
   // Aggiorna la mappa con lat/long
 }

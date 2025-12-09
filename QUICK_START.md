@@ -37,14 +37,14 @@ SECRET_KEY=your-secret-key
 python run.py
 ```
 
-Server disponibile su: **http://localhost:5000**
+Server disponibile su: **http://localhost:5001**
 
 ## 🌐 URL Applicazioni
 
 | Applicazione | URL | Credenziali |
 |-------------|-----|-------------|
-| **Cliente SPA** | http://localhost:5000/ | mario.rossi@mail.com / pass123 |
-| **Admin Dashboard** | http://localhost:5000/admin | Accesso diretto |
+| **Cliente SPA** | http://localhost:5001/ | mario.rossi@mail.com / pass123 |
+| **Admin Dashboard** | http://localhost:5001/admin | Accesso diretto |
 
 ## 📱 Funzionalità Cliente
 
@@ -218,7 +218,7 @@ pip install -r requirements.txt --force-reinstall
 ```powershell
 # Verifica .env
 # Controlla credenziali Aiven
-# Testa connessione: http://localhost:5000/api/test-db
+# Testa connessione: http://localhost:5001/api/test-db
 ```
 
 ### Frontend non carica
@@ -231,14 +231,14 @@ pip install -r requirements.txt --force-reinstall
 ## ✅ Testing
 
 ### Test Cliente
-1. Apri http://localhost:5000/
+1. Apri http://localhost:5001/
 2. Login: mario.rossi@mail.com / pass123
 3. Clicca su un ordine
 4. Verifica mappa e tracciamento
 5. (Se completato) Lascia valutazione
 
 ### Test Admin
-1. Apri http://localhost:5000/admin
+1. Apri http://localhost:5001/admin
 2. Verifica statistiche dashboard
 3. Vai su "Droni" → Clicca "+ Nuovo Drone"
 4. Compila form e salva
@@ -247,13 +247,13 @@ pip install -r requirements.txt --force-reinstall
 ### Test API
 ```powershell
 # Test connessione DB
-curl http://localhost:5000/api/test-db
+curl http://localhost:5001/api/test-db
 
 # Lista droni
-curl http://localhost:5000/api/droni
+curl http://localhost:5001/api/droni
 
 # Lista missioni
-curl http://localhost:5000/api/missioni
+curl http://localhost:5001/api/missioni
 ```
 
 ## 🎓 Features Implementate

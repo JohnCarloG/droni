@@ -8,6 +8,9 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
+    <!-- Font Awesome (per icone professionali) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Custom Design System -->
     <link rel="stylesheet" href="/static/css/design-system.css?v=2">
 </head>
@@ -15,26 +18,26 @@
     <!-- Navbar -->
     <header class="navbar" id="main-navbar" style="display: none;">
         <div class="container flex justify-between items-center">
-            <a href="/" class="navbar-brand">🚁 Droni Delivery</a>
+            <a href="/" class="navbar-brand"><i class="fa-solid fa-helicopter mr-2"></i>Droni Delivery</a>
             <nav>
                 <ul class="navbar-nav" id="navbar-links">
                     <li><a href="#" class="nav-link active" id="nav-ordini">I miei ordini</a></li>
-                    <li><a href="#" class="nav-link text-danger" id="nav-logout">Esci</a></li>
+                    <li><a href="#" class="nav-link text-danger" id="nav-logout"><i class="fa-solid fa-right-from-bracket mr-1"></i>Esci</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <!-- Role Selection (inizialmente nascosta, mostrata da JS) -->
-    <div id="role-section" class="login-wrapper" style="display: none;">
+    <div id="role-section" class="login-wrapper" style="display: flex;">
         <div class="text-center">
-            <h1 class="mb-2">🚁 Droni Delivery</h1>
+            <h1 class="mb-2"><i class="fa-solid fa-helicopter"></i> Droni Delivery</h1>
             <p class="text-gray-500 mb-8">Sistema di gestione consegne con droni</p>
             
             <div class="flex gap-4 justify-center flex-wrap">
                 <div class="card cursor-pointer" style="width: 200px;" onclick="showLogin('cliente')">
                     <div class="text-center p-4">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
+                        <i class="fa-solid fa-user-circle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--blue-500);"></i>
                         <h3>Cliente</h3>
                         <p class="text-sm text-gray-500 mt-2">Traccia i tuoi ordini</p>
                     </div>
@@ -42,7 +45,7 @@
                 
                 <div class="card cursor-pointer" style="width: 200px;" onclick="goToAdmin()">
                     <div class="text-center p-4">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚙️</div>
+                        <i class="fa-solid fa-cogs" style="font-size: 3rem; margin-bottom: 1rem; color: var(--gray-600);"></i>
                         <h3>Amministratore</h3>
                         <p class="text-sm text-gray-500 mt-2">Gestisci il sistema</p>
                     </div>
@@ -97,7 +100,7 @@
             <div id="orders-view">
                 <div class="flex justify-between items-center mb-4">
                     <h2>I Tuoi Ordini</h2>
-                    <button class="btn btn-secondary btn-sm" onclick="loadOrders()">🔄 Aggiorna</button>
+                    <button class="btn btn-secondary btn-sm" onclick="loadOrders()"><i class="fa-solid fa-sync mr-2"></i>Aggiorna</button>
                 </div>
                 
                 <div id="orders-container" class="grid grid-cols-3 gap-4">
@@ -116,14 +119,35 @@
                     <div>
                         <div class="card mb-4">
                             <h3 class="card-title">📦 Dettagli Ordine</h3>
-                            <div id="order-info">
-                                <!-- Dettagli ordine -->
+                            <div id="order-status-stepper" class="mb-4">
+                                <!-- Stepper verrà popolato da JS. Esempio: -->
+                                <!-- 
+                                <div class="stepper">
+                                    <div class="step completed">
+                                        <div class="step-icon">✓</div>
+                                        <div class="step-label">Ricevuto</div>
+                                    </div>
+                                    <div class="step-connector"></div>
+                                    <div class="step active">
+                                        <div class="step-icon">✈️</div>
+                                        <div class="step-label">In Volo</div>
+                                    </div>
+                                    <div class="step-connector"></div>
+                                    <div class="step">
+                                        <div class="step-icon">🏁</div>
+                                        <div class="step-label">Consegnato</div>
+                                    </div>
+                                </div>
+                                -->
+                            </div>
+                            <div id="order-info" class="pt-2">
+                                <!-- Dettagli aggiuntivi verranno inseriti qui -->
                             </div>
                         </div>
 
                         <!-- Prodotti -->
                         <div class="card mb-4">
-                            <h3 class="card-title">📋 Contenuto Pacco</h3>
+                            <h3 class="card-title"><i class="fa-solid fa-clipboard-list mr-2"></i>Contenuto Pacco</h3>
                             <div id="order-products">
                                 <!-- Lista prodotti -->
                             </div>
@@ -131,9 +155,9 @@
 
                         <!-- Valutazione (solo se completata) -->
                         <div class="card" id="rating-card" style="display: none;">
-                            <h3 class="card-title">⭐ Valuta la Consegna</h3>
+                            <h3 class="card-title"><i class="fa-solid fa-star mr-2"></i>Valuta la Consegna</h3>
                             <div id="existing-rating" style="display: none;">
-                                <p><strong>Valutazione:</strong> <span id="display-rating"></span>/10 ⭐</p>
+                                <p><strong>Valutazione:</strong> <span id="display-rating"></span>/10 <i class="fa-solid fa-star" style="color: var(--amber-500);"></i></p>
                                 <p><strong>Commento:</strong></p>
                                 <p class="text-gray-500" id="display-comment"></p>
                             </div>
@@ -167,15 +191,15 @@
                     <div>
                         <div class="card mb-4">
                             <div class="flex justify-between items-center mb-4">
-                                <h3 class="card-title mb-0">🗺️ Posizione Drone</h3>
-                                <span id="live-indicator" class="badge badge-green">● LIVE</span>
+                                <h3 class="card-title mb-0"><i class="fa-solid fa-map-location-dot mr-2"></i>Posizione Drone</h3>
+                                <span id="live-indicator" class="badge badge-green"><i class="fa-solid fa-circle fa-beat-fade" style="font-size: 0.6em; margin-right: 0.5rem;"></i>LIVE</span>
                             </div>
                             <div id="map" class="map-container"></div>
                         </div>
 
                         <!-- Timeline Tracciamento -->
                         <div class="card">
-                            <h3 class="card-title">📍 Storico Tracciamento</h3>
+                            <h3 class="card-title"><i class="fa-solid fa-timeline mr-2"></i>Storico Tracciamento</h3>
                             <div id="tracking-timeline">
                                 <!-- Timeline tracce -->
                             </div>
@@ -187,7 +211,7 @@
     </main>
 
     <!-- Loading Spinner -->
-    <div id="loading" style="display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; z-index: 999;">
+    <div id="loading" style="display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.9); align-items: center; justify-content: center; z-index: 999;">
         <div class="spinner" style="width: 40px; height: 40px; border: 3px solid var(--gray-200); border-top-color: var(--blue-600); border-radius: 50%; animation: spin 0.6s linear infinite;"></div>
     </div>
 
@@ -195,10 +219,112 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .rating-star { font-size: 1.5rem; transition: color 0.1s; }
         .rating-star:hover, .rating-star.filled { color: var(--amber-500); }
+
+        /* Stepper Grafico */
+        .stepper {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex-shrink: 0;
+            width: 80px; /* Larghezza fissa per allineamento */
+        }
+        .step-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--gray-200);
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid var(--gray-200);
+        }
+        .step-label {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+        .step-connector {
+            flex-grow: 1;
+            height: 2px;
+            background-color: var(--gray-200);
+            margin: 0 0.25rem;
+            transform: translateY(17px); /* Allinea con il centro delle icone */
+        }
+        /* Stati dello stepper */
+        .step.active .step-icon, .step.completed .step-icon {
+            border-color: var(--blue-600);
+        }
+        .step.completed .step-icon {
+            background-color: var(--blue-600);
+            color: white;
+        }
+        .step.active .step-label {
+            color: var(--blue-600);
+            font-weight: 600;
+        }
+        .step.completed + .step-connector {
+            background-color: var(--blue-600);
+        }
     </style>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        /**
+         * Renderizza lo stepper dello stato dell'ordine.
+         * Questa funzione può essere chiamata da app.js dopo aver caricato i dettagli dell'ordine.
+         * @param {string} status - Lo stato attuale dell'ordine (es. 'in volo', 'completata').
+         */
+        function renderOrderStatusStepper(status) {
+            const stepperContainer = document.getElementById('order-status-stepper');
+            if (!stepperContainer) return;
+
+            const statuses = ['ricevuto', 'in volo', 'consegnato'];
+            const icons = {
+                ricevuto: 'fa-solid fa-check',
+                'in volo': 'fa-solid fa-plane-up',
+                consegnato: 'fa-solid fa-flag-checkered'
+            };
+
+            // Lo stato della missione 'completata' corrisponde allo step 'consegnato'
+            const normalizedStatus = status.toLowerCase() === 'completata' ? 'consegnato' : status.toLowerCase();
+            const currentStatusIndex = statuses.indexOf(normalizedStatus);
+
+            let stepperHTML = '<div class="stepper">';
+            statuses.forEach((step, index) => {
+                let stepClass = 'step';
+                if (index < currentStatusIndex) {
+                    stepClass += ' completed';
+                } else if (index === currentStatusIndex) {
+                    stepClass += ' active';
+                }
+
+                stepperHTML += `
+                    <div class="${stepClass}">
+                        <div class="step-icon"><i class="${icons[step]}"></i></div>
+                        <div class="step-label">${step.charAt(0).toUpperCase() + step.slice(1)}</div>
+                    </div>
+                `;
+
+                if (index < statuses.length - 1) {
+                    stepperHTML += '<div class="step-connector"></div>';
+                }
+            });
+            stepperHTML += '</div>';
+
+            stepperContainer.innerHTML = stepperHTML;
+        }
+    </script>
     <script src="/static/js/app.js"></script>
 </body>
 </html>

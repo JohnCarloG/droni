@@ -274,6 +274,6 @@ Il progetto è **pronto per la consegna** e include:
 9. ✅ Design system minimalista professionale
 10. ✅ Nessun errore o warning
 
-**Server in esecuzione su: http://localhost:5000**
+**Server in esecuzione su: http://localhost:5001**
 
 **Tutto verificato e funzionante! ✅**

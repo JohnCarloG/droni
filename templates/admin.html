@@ -7,22 +7,28 @@
     
     <!-- Custom Design System -->
     <link rel="stylesheet" href="/static/css/design-system.css">
+
+    <!-- Font Awesome (per icone professionali) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Chart.js (per grafici) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 </head>
 <body>
     <!-- Navbar -->
     <header class="navbar">
         <div class="container flex justify-between items-center">
-            <a href="/admin" class="navbar-brand">⚙️ Droni Delivery Admin</a>
+            <a href="/admin" class="navbar-brand"><i class="fa-solid fa-cogs mr-2"></i>Droni Delivery Admin</a>
             <nav>
                 <ul class="navbar-nav">
                     <li><a href="#" class="nav-link active" data-view="dashboard">Dashboard</a></li>
                     <li><a href="#" class="nav-link" data-view="droni">Droni</a></li>
                     <li><a href="#" class="nav-link" data-view="piloti">Piloti</a></li>
                     <li><a href="#" class="nav-link" data-view="missioni">Missioni</a></li>
-                    <li><a href="#" class="nav-link" data-view="ordini">Ordini</a></li>
+                    <li><a href="#" class="nav-link" data-view="ordini">Ordini</a></li> 
                     <li><a href="#" class="nav-link" data-view="report">Report</a></li>
                     <li><a href="#" class="nav-link" data-view="analytics">Analytics</a></li>
-                    <li><a href="/" class="nav-link text-danger">← Esci</a></li>
+                    <li><a href="/" class="nav-link text-danger"><i class="fa-solid fa-right-from-bracket mr-1"></i>Esci</a></li>
                 </ul>
             </nav>
         </div>
@@ -32,37 +38,61 @@
         <!-- Dashboard View -->
         <div id="dashboard-view" class="view-section">
             <div class="flex justify-between items-center mb-6">
-                <h1>📊 Dashboard Operativa</h1>
-                <button class="btn btn-secondary btn-sm" onclick="loadDashboard()">🔄 Aggiorna</button>
+                <h1><i class="fa-solid fa-chart-pie mr-2"></i>Dashboard Operativa</h1>
+                <button class="btn btn-secondary btn-sm" onclick="loadDashboard()"><i class="fa-solid fa-sync mr-2"></i>Aggiorna</button>
             </div>
             
             <!-- Statistics Cards -->
             <div class="grid grid-cols-4 gap-4 mb-6">
-                <div class="stat-card text-center">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚁</div>
-                    <div class="stat-value" id="stat-droni">0</div>
-                    <div class="stat-label">Droni Attivi</div>
+                <!-- Card Droni Attivi -->
+                <div class="stat-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="stat-label">Droni Attivi</div>
+                            <div class="stat-value" id="stat-droni">0</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-helicopter"></i></div>
+                    </div>
+                    <div class="stat-trend text-success" id="stat-droni-trend"></div>
                 </div>
-                <div class="stat-card text-center">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔄</div>
-                    <div class="stat-value" id="stat-missioni-corso">0</div>
-                    <div class="stat-label">Missioni in Corso</div>
+                <!-- Card Missioni in Corso -->
+                <div class="stat-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="stat-label">Missioni in Corso</div>
+                            <div class="stat-value" id="stat-missioni-corso">0</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
+                    </div>
+                    <div class="stat-trend text-danger" id="stat-missioni-corso-trend"></div>
                 </div>
-                <div class="stat-card text-center">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
-                    <div class="stat-value" id="stat-missioni-completate">0</div>
-                    <div class="stat-label">Completate</div>
+                <!-- Card Missioni Completate -->
+                <div class="stat-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="stat-label">Completate Oggi</div>
+                            <div class="stat-value" id="stat-missioni-completate">0</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
+                    </div>
+                    <div class="stat-trend text-success" id="stat-missioni-completate-trend"></div>
                 </div>
-                <div class="stat-card text-center">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⭐</div>
-                    <div class="stat-value" id="stat-valutazione">0.0</div>
-                    <div class="stat-label">Valutazione Media</div>
+                <!-- Card Valutazione Media -->
+                <div class="stat-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="stat-label">Valutazione Media</div>
+                            <div class="stat-value" id="stat-valutazione">0.0</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+                    </div>
+                    <div class="stat-trend text-gray-500" id="stat-valutazione-trend"></div>
                 </div>
             </div>
 
             <!-- Recent Missions -->
             <div class="card">
-                <h3 class="card-title">🚀 Missioni Recenti</h3>
+                <h3 class="card-title"><i class="fa-solid fa-rocket mr-2"></i>Missioni Recenti</h3>
                 <div id="recent-missions"></div>
             </div>
         </div>
@@ -70,8 +100,8 @@
         <!-- Droni View -->
         <div id="droni-view" class="view-section" style="display: none;">
             <div class="flex justify-between items-center mb-6">
-                <h1>🚁 Gestione Droni</h1>
-                <button class="btn btn-primary" onclick="showAddDroneForm()">+ Nuovo Drone</button>
+                <h1><i class="fa-solid fa-helicopter mr-2"></i>Gestione Droni</h1>
+                <button class="btn btn-primary" onclick="showAddDroneForm()"><i class="fa-solid fa-plus mr-2"></i>Nuovo Drone</button>
             </div>
 
             <div class="table-wrapper">
@@ -95,7 +125,7 @@
 
         <!-- Missioni View -->
         <div id="missioni-view" class="view-section" style="display: none;">
-            <h1 class="mb-6">📋 Tutte le Missioni</h1>
+            <h1 class="mb-6"><i class="fa-solid fa-clipboard-list mr-2"></i>Tutte le Missioni</h1>
 
             <!-- Filters -->
             <div class="card mb-4">
@@ -132,7 +162,7 @@
 
         <!-- Ordini View -->
         <div id="ordini-view" class="view-section" style="display: none;">
-            <h1 class="mb-6">📦 Tutti gli Ordini</h1>
+            <h1 class="mb-6"><i class="fa-solid fa-boxes-stacked mr-2"></i>Tutti gli Ordini</h1>
 
             <div class="table-wrapper">
                 <table class="table" id="ordini-table">
@@ -156,8 +186,8 @@
         <!-- Piloti View -->
         <div id="piloti-view" class="view-section" style="display: none;">
             <div class="flex justify-between items-center mb-6">
-                <h1>👨‍✈️ Gestione Piloti</h1>
-                <button class="btn btn-primary" onclick="showAddPilotaForm()">+ Nuovo Pilota</button>
+                <h1><i class="fa-solid fa-user-tie mr-2"></i>Gestione Piloti</h1>
+                <button class="btn btn-primary" onclick="showAddPilotaForm()"><i class="fa-solid fa-user-plus mr-2"></i>Nuovo Pilota</button>
             </div>
 
             <div class="table-wrapper">
@@ -183,34 +213,40 @@
         <!-- Report View -->
         <div id="report-view" class="view-section" style="display: none;">
             <div class="flex justify-between items-center mb-6">
-                <h1>📈 Report e Statistiche</h1>
-                <button class="btn btn-primary" onclick="exportReport()">📥 Esporta CSV</button>
+                <h1><i class="fa-solid fa-chart-line mr-2"></i>Report e Statistiche</h1>
+                <button class="btn btn-primary" onclick="exportReport()"><i class="fa-solid fa-file-csv mr-2"></i>Esporta CSV</button>
             </div>
 
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <!-- Statistiche Missioni -->
                 <div class="card">
-                    <h3 class="card-title">📊 Statistiche Missioni</h3>
-                    <div id="report-missioni-stats"></div>
+                    <h3 class="card-title"><i class="fa-solid fa-chart-bar mr-2"></i>Statistiche Missioni</h3>
+                    <div id="report-missioni-stats">
+                        <!-- I dati verranno popolati da JS -->
+                    </div>
                 </div>
 
                 <!-- Statistiche Droni -->
                 <div class="card">
-                    <h3 class="card-title">🚁 Performance Droni</h3>
-                    <div id="report-droni-stats"></div>
+                    <h3 class="card-title"><i class="fa-solid fa-pie-chart mr-2"></i>Distribuzione Droni per Stato</h3>
+                    <div id="report-droni-stats" style="height: 250px; position: relative;">
+                        <canvas id="drones-status-chart"></canvas>
+                    </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-6">
                 <!-- Top Piloti -->
                 <div class="card">
-                    <h3 class="card-title">🏆 Top Piloti per Valutazione</h3>
-                    <div id="report-top-piloti"></div>
+                    <h3 class="card-title"><i class="fa-solid fa-trophy mr-2"></i>Missioni per Pilota</h3>
+                    <div id="report-top-piloti" style="height: 250px; position: relative;">
+                        <canvas id="top-pilots-chart"></canvas>
+                    </div>
                 </div>
 
                 <!-- Distribuzione Consegne -->
                 <div class="card">
-                    <h3 class="card-title">📦 Distribuzione Consegne</h3>
+                    <h3 class="card-title"><i class="fa-solid fa-truck-fast mr-2"></i>Distribuzione Consegne</h3>
                     <div id="report-consegne"></div>
                 </div>
             </div>
@@ -218,12 +254,12 @@
 
         <!-- Analytics / ML View -->
         <div id="analytics-view" class="view-section" style="display: none;">
-            <h1 class="mb-6">🤖 Analisi Predittive (Machine Learning)</h1>
+            <h1 class="mb-6"><i class="fa-solid fa-brain mr-2"></i>Analisi Predittive (Machine Learning)</h1>
 
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <!-- Previsione Domanda -->
                 <div class="card">
-                    <h3 class="card-title">📈 Previsione Domanda</h3>
+                    <h3 class="card-title"><i class="fa-solid fa-arrow-trend-up mr-2"></i>Previsione Domanda</h3>
                     <p class="text-gray-500 mb-4">Stima del carico di lavoro basata sui dati storici</p>
                     <div id="ml-demand-prediction">
                         <div class="stat-card mb-3">
@@ -237,7 +273,7 @@
 
                 <!-- Ottimizzazione Rotte -->
                 <div class="card">
-                    <h3 class="card-title">🗺️ Analisi Percorsi</h3>
+                    <h3 class="card-title"><i class="fa-solid fa-route mr-2"></i>Analisi Percorsi</h3>
                     <p class="text-gray-500 mb-4">Analisi delle tracce di volo per ottimizzazione</p>
                     <div id="ml-route-analysis">
                         <div class="stat-card mb-3">
@@ -253,7 +289,7 @@
             <div class="grid grid-cols-2 gap-6">
                 <!-- Predizione Manutenzione -->
                 <div class="card">
-                    <h3 class="card-title">🔧 Manutenzione Predittiva</h3>
+                    <h3 class="card-title"><i class="fa-solid fa-screwdriver-wrench mr-2"></i>Manutenzione Predittiva</h3>
                     <p class="text-gray-500 mb-4">Previsione necessità manutenzione droni</p>
                     <div id="ml-maintenance">
                         <div class="table-wrapper">
@@ -275,7 +311,7 @@
 
                 <!-- Analisi Valutazioni -->
                 <div class="card">
-                    <h3 class="card-title">⭐ Sentiment Analysis</h3>
+                    <h3 class="card-title"><i class="fa-solid fa-face-smile mr-2"></i>Sentiment Analysis</h3>
                     <p class="text-gray-500 mb-4">Analisi dei commenti delle valutazioni</p>
                     <div id="ml-sentiment">
                         <div class="flex gap-4 mb-4">
@@ -300,7 +336,7 @@
     </main>
 
     <!-- Loading -->
-    <div id="loading" style="display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; z-index: 999;">
+    <div id="loading" style="display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.9); align-items: center; justify-content: center; z-index: 999;">
         <div style="width: 40px; height: 40px; border: 3px solid var(--gray-200); border-top-color: var(--blue-600); border-radius: 50%; animation: spin 0.6s linear infinite;"></div>
     </div>
 
@@ -309,7 +345,7 @@
         <div class="modal">
             <div class="modal-header">
                 <h3 class="modal-title">Aggiungi Nuovo Drone</h3>
-                <button class="btn btn-secondary btn-sm" onclick="closeAddDroneForm()">✕</button>
+                <button class="modal-close-btn" onclick="closeAddDroneForm()"><i class="fa-solid fa-times"></i></button>
             </div>
             <div class="modal-body">
                 <form id="add-drone-form">
@@ -339,7 +375,7 @@
         <div class="modal">
             <div class="modal-header">
                 <h3 class="modal-title">Aggiungi Nuovo Pilota</h3>
-                <button class="btn btn-secondary btn-sm" onclick="closeAddPilotaForm()">✕</button>
+                <button class="modal-close-btn" onclick="closeAddPilotaForm()"><i class="fa-solid fa-times"></i></button>
             </div>
             <div class="modal-body">
                 <form id="add-pilota-form">
@@ -372,8 +408,154 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .text-success { color: var(--green-600); }
         .text-danger { color: var(--red-600); }
+
+        /* Stili per KPI Cards migliorate */
+        .stat-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: var(--rounded-lg);
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            margin-bottom: 0.25rem;
+        }
+        .stat-icon {
+            font-size: 1.5rem;
+            padding: 0.75rem;
+            border-radius: var(--rounded-md);
+            background-color: var(--blue-50);
+            color: var(--blue-500);
+        }
+        .stat-trend { font-size: 0.875rem; font-weight: 600; margin-top: 1rem; height: 1.25rem; }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--gray-400);
+            cursor: pointer;
+        }
+        .modal-close-btn:hover {
+            color: var(--gray-600);
+        }
     </style>
 
+    <script>
+        /**
+         * Questo script inline aggiunge la logica per i grafici nella sezione Report.
+         * Utilizza un MutationObserver per attivarsi quando la sezione diventa visibile,
+         * senza dover modificare il file admin.js esistente.
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            let dronesChartInstance = null;
+            let pilotsChartInstance = null;
+
+            const reportView = document.getElementById('report-view');
+
+            // Funzione helper per recuperare i dati
+            async function fetchChartData(url) {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }
+
+            // Osserva quando la vista dei report viene mostrata
+            const observer = new MutationObserver((mutationsList) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                        const isVisible = !reportView.style.display || reportView.style.display === 'block';
+                        // Renderizza i grafici solo la prima volta che la vista è visibile
+                        if (isVisible && !dronesChartInstance && !pilotsChartInstance) {
+                            loadReportCharts();
+                        }
+                    }
+                }
+            });
+
+            observer.observe(reportView, { attributes: true });
+
+            async function loadReportCharts() {
+                // 1. Carica e renderizza il grafico a torta dello stato dei droni
+                try {
+                    const droneStats = await fetchChartData('/api/statistiche/droni');
+                    renderDronesStatusChart(droneStats);
+                } catch (error) {
+                    console.error('Error loading drone stats for chart:', error);
+                    document.getElementById('report-droni-stats').innerHTML = `<p class="text-danger">Impossibile caricare il grafico dei droni.</p>`;
+                }
+
+                // 2. Carica e renderizza il grafico a barre delle missioni per pilota
+                // NOTA: Si assume l'esistenza di un nuovo endpoint API '/api/statistiche/missioni-piloti'
+                // che restituisce un array di oggetti: [{nome, cognome, missioni_completate}, ...]
+                try {
+                    const pilotMissionStats = await fetchChartData('/api/statistiche/missioni-piloti');
+                    renderTopPilotsChart(pilotMissionStats);
+                } catch (error) {
+                    console.error('Error loading pilot stats for chart:', error);
+                    document.getElementById('report-top-piloti').innerHTML = `<p class="text-danger">Impossibile caricare il grafico dei piloti.</p>`;
+                }
+            }
+
+            function renderDronesStatusChart(stats) {
+                const ctx = document.getElementById('drones-status-chart').getContext('2d');
+                
+                const labels = Object.keys(stats);
+                const data = Object.values(stats);
+
+                // Mappa gli stati ai colori del design system
+                const colors = {
+                    disponibile: 'var(--green-500)',
+                    'in missione': 'var(--amber-500)',
+                    'in manutenzione': 'var(--red-500)',
+                };
+                const backgroundColors = labels.map(label => colors[label.toLowerCase()] || 'var(--gray-400)');
+
+                dronesChartInstance = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels.map(l => l.charAt(0).toUpperCase() + l.slice(1)),
+                        datasets: [{ data, backgroundColor: backgroundColors, borderColor: 'white', borderWidth: 2 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+
+            function renderTopPilotsChart(stats) {
+                const ctx = document.getElementById('top-pilots-chart').getContext('2d');
+
+                // Ordina per missioni completate e prende i primi 5
+                const sortedStats = stats.sort((a, b) => b.missioni_completate - a.missioni_completate).slice(0, 5);
+
+                pilotsChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: sortedStats.map(p => `${p.nome} ${p.cognome}`),
+                        datasets: [{
+                            label: 'Missioni Completate',
+                            data: sortedStats.map(p => p.missioni_completate),
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)', // var(--blue-500) with alpha
+                            borderColor: 'var(--blue-600)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                        }]
+                    },
+                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { stepSize: 1 } } } }
+                });
+            }
+        });
+    </script>
     <script src="/static/js/admin.js"></script>
 </body>
 </html>

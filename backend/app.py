@@ -1,6 +1,6 @@
-from flask import Flask, jsonify, request, session, render_template, send_from_directory
+from flask import Flask, jsonify, request, session, render_template, g
 from flask_cors import CORS
-from backend.db import get_db
+from backend.db import Database
 import os
 from dotenv import load_dotenv
 from datetime import datetime
@@ -16,6 +16,26 @@ app.secret_key = os.getenv('SECRET_KEY', 'default-secret-key-change-in-productio
 
 # Abilita CORS per permettere richieste dal frontend
 CORS(app)
+
+# ============================================
+# GESTIONE DATABASE EFFICIENTE
+# ============================================
+
+def get_db():
+    """
+    Apre una nuova connessione al database se non ce n'è una per la richiesta corrente.
+    """
+    if 'db' not in g:
+        g.db = Database()
+        g.db.connect()
+    return g.db
+
+@app.teardown_appcontext
+def close_db(e=None):
+    """Chiude la connessione al database alla fine della richiesta."""
+    db = g.pop('db', None)
+    if db is not None:
+        db.disconnect()
 
 # ============================================
 # ROUTE PAGINE WEB (SPA)
@@ -49,7 +69,6 @@ def test_db():
     db = get_db()
     if db.connection:
         result = db.fetch_one("SELECT COUNT(*) as count FROM Drone")
-        db.disconnect()
         return jsonify({
             'status': 'success',
             'message': 'Connessione al database riuscita',
@@ -70,7 +89,6 @@ def get_droni():
     db = get_db()
     query = "SELECT * FROM Drone"
     droni = db.fetch_query(query)
-    db.disconnect()
     return jsonify(droni)
 
 @app.route('/api/droni/<int:id>', methods=['GET'])
@@ -79,7 +97,6 @@ def get_drone(id):
     db = get_db()
     query = "SELECT * FROM Drone WHERE ID = %s"
     drone = db.fetch_one(query, (id,))
-    db.disconnect()
     
     if drone:
         return jsonify(drone)
@@ -100,7 +117,6 @@ def create_drone():
         data['Capacita'],
         data['Batteria']
     ))
-    db.disconnect()
     
     return jsonify({
         'message': 'Drone creato con successo',
@@ -124,7 +140,6 @@ def update_drone(id):
         data['Batteria'],
         id
     ))
-    db.disconnect()
     
     return jsonify({'message': 'Drone aggiornato con successo'})
 
@@ -134,7 +149,6 @@ def delete_drone(id):
     db = get_db()
     query = "DELETE FROM Drone WHERE ID = %s"
     db.execute_query(query, (id,))
-    db.disconnect()
     
     return jsonify({'message': 'Drone eliminato con successo'})
 
@@ -155,7 +169,6 @@ def get_piloti():
         GROUP BY p.ID
     """
     piloti = db.fetch_query(query)
-    db.disconnect()
     return jsonify(piloti)
 
 @app.route('/api/piloti/<int:id>', methods=['GET'])
@@ -164,7 +177,6 @@ def get_pilota(id):
     db = get_db()
     query = "SELECT * FROM Pilota WHERE ID = %s"
     pilota = db.fetch_one(query, (id,))
-    db.disconnect()
     
     if pilota:
         return jsonify(pilota)
@@ -186,7 +198,6 @@ def create_pilota():
         data['Email'],
         data['NumeroLicenza']
     ))
-    db.disconnect()
     
     return jsonify({
         'success': True,
@@ -204,12 +215,10 @@ def delete_pilota(id):
     result = db.fetch_one(check_query, (id,))
     
     if result and result['count'] > 0:
-        db.disconnect()
         return jsonify({'error': 'Impossibile eliminare: pilota con missioni assegnate'}), 400
     
     query = "DELETE FROM Pilota WHERE ID = %s"
     db.execute_query(query, (id,))
-    db.disconnect()
     
     return jsonify({
         'success': True,
@@ -235,7 +244,6 @@ def get_missioni():
         ORDER BY m.DataMissione DESC, m.Ora DESC
     """
     missioni = db.fetch_query(query)
-    db.disconnect()
     
     # Converti date e time in stringhe
     for missione in missioni:
@@ -261,7 +269,6 @@ def get_missione(id):
         WHERE m.ID = %s
     """
     missione = db.fetch_one(query, (id,))
-    db.disconnect()
     
     if missione:
         if missione['DataMissione']:
@@ -287,7 +294,6 @@ def get_missioni_by_stato(stato):
         ORDER BY m.DataMissione DESC, m.Ora DESC
     """
     missioni = db.fetch_query(query, (stato,))
-    db.disconnect()
     
     for missione in missioni:
         if missione['DataMissione']:
@@ -311,7 +317,6 @@ def get_tracce_missione(id_missione):
         ORDER BY TIMESTAMP ASC
     """
     tracce = db.fetch_query(query, (id_missione,))
-    db.disconnect()
     
     # Converti timestamp in stringhe
     for traccia in tracce:
@@ -331,7 +336,6 @@ def get_ultima_traccia(id_missione):
         LIMIT 1
     """
     traccia = db.fetch_one(query, (id_missione,))
-    db.disconnect()
     
     if traccia:
         if traccia['TIMESTAMP']:
@@ -358,7 +362,6 @@ def get_ordini():
         ORDER BY o.Orario DESC
     """
     ordini = db.fetch_query(query)
-    db.disconnect()
     
     for ordine in ordini:
         if ordine['Orario']:
@@ -381,7 +384,6 @@ def get_ordini_utente(id_utente):
         ORDER BY o.Orario DESC
     """
     ordini = db.fetch_query(query, (id_utente,))
-    db.disconnect()
     
     for ordine in ordini:
         if ordine['Orario']:
@@ -425,11 +427,8 @@ def get_ordine(id):
         """
         prodotti = db.fetch_query(query_prodotti, (id,))
         ordine['Prodotti'] = prodotti
-        
-        db.disconnect()
         return jsonify(ordine)
     
-    db.disconnect()
     return jsonify({'error': 'Ordine non trovato'}), 404
 
 # ============================================
@@ -442,7 +441,6 @@ def get_prodotti():
     db = get_db()
     query = "SELECT * FROM Prodotto"
     prodotti = db.fetch_query(query)
-    db.disconnect()
     return jsonify(prodotti)
 
 @app.route('/api/prodotti/categoria/<categoria>', methods=['GET'])
@@ -451,7 +449,6 @@ def get_prodotti_by_categoria(categoria):
     db = get_db()
     query = "SELECT * FROM Prodotto WHERE categoria = %s"
     prodotti = db.fetch_query(query, (categoria,))
-    db.disconnect()
     return jsonify(prodotti)
 
 # ============================================
@@ -464,7 +461,6 @@ def get_utenti():
     db = get_db()
     query = "SELECT ID, Nome, Mail, Ruolo FROM Utente"
     utenti = db.fetch_query(query)
-    db.disconnect()
     return jsonify(utenti)
 
 @app.route('/api/login', methods=['POST'])
@@ -475,7 +471,6 @@ def login():
     db = get_db()
     query = "SELECT * FROM Utente WHERE Mail = %s AND Password = %s"
     utente = db.fetch_one(query, (data['Mail'], data['Password']))
-    db.disconnect()
     
     if utente:
         # Salva l'utente nella sessione
@@ -519,11 +514,9 @@ def add_valutazione(id):
     missione = db.fetch_one(check_query, (id,))
     
     if not missione:
-        db.disconnect()
         return jsonify({'error': 'Missione non trovata'}), 404
     
     if missione['Stato'] != 'completata':
-        db.disconnect()
         return jsonify({'error': 'Puoi valutare solo missioni completate'}), 400
     
     # Aggiorna la valutazione
@@ -537,7 +530,6 @@ def add_valutazione(id):
         data.get('Commento', ''),
         id
     ))
-    db.disconnect()
     
     return jsonify({
         'success': True,
@@ -550,7 +542,6 @@ def get_valutazione(id):
     db = get_db()
     query = "SELECT Valutazione, Commento FROM Missioni WHERE ID = %s"
     valutazione = db.fetch_one(query, (id,))
-    db.disconnect()
     
     if valutazione:
         return jsonify(valutazione)
@@ -574,7 +565,6 @@ def get_statistiche_missioni():
         GROUP BY Stato
     """
     stats = db.fetch_query(query)
-    db.disconnect()
     
     return jsonify(stats)
 
@@ -596,7 +586,6 @@ def get_statistiche_droni():
         ORDER BY NumeroMissioni DESC
     """
     stats = db.fetch_query(query)
-    db.disconnect()
     
     return jsonify(stats)
 
@@ -619,7 +608,6 @@ def get_statistiche_piloti():
         ORDER BY MediaValutazione DESC
     """
     stats = db.fetch_query(query)
-    db.disconnect()
     
     return jsonify(stats)
 
@@ -637,7 +625,6 @@ def get_report_consegne():
         GROUP BY o.Tipo
     """
     report = db.fetch_query(query)
-    db.disconnect()
     
     return jsonify(report)
 
@@ -659,7 +646,6 @@ def get_demand_prediction():
         WHERE o.DataConsegna IS NOT NULL
     """
     result = db.fetch_one(query)
-    db.disconnect()
     
     if result and result['GiorniAttivi'] > 0:
         media_giornaliera = result['TotaleOrdini'] / result['GiorniAttivi']
@@ -691,7 +677,6 @@ def get_route_analysis():
         GROUP BY m.ID
     """
     tracce = db.fetch_query(query)
-    db.disconnect()
     
     if tracce:
         # Calcola tempo medio in minuti (approssimativo)
@@ -721,7 +706,6 @@ def get_maintenance_prediction():
         GROUP BY d.ID, d.Modello, d.Batteria
     """
     droni = db.fetch_query(query)
-    db.disconnect()
     
     # Logica predittiva semplice
     risultati = []
@@ -754,7 +738,6 @@ def get_sentiment_analysis():
         WHERE Valutazione IS NOT NULL
     """
     valutazioni = db.fetch_query(query)
-    db.disconnect()
     
     positivi = 0
     neutri = 0

@@ -9,5 +9,5 @@ load_dotenv()
 
 if __name__ == '__main__':
     host = os.getenv('HOST', '0.0.0.0')
-    port = int(os.getenv('PORT', 5000))
+    port = int(os.getenv('PORT', 5001)) # Ho cambiato la porta predefinita a 5001
     app.run(host=host, port=port, debug=True)
